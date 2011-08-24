@@ -1,0 +1,20 @@
+<p><a href="/assetic/recompile">Recompile assets</a></p>
+
+<p>{"Cached files"}:</p>
+
+<p>
+<table width="100%">
+	<tr>
+		<th width="50%">{" Name "}</th>
+		<th width="25%">{" Generated on "}</th>
+		<th width="25%">{" File size (pre-gzip) "}</th>
+	</tr>
+{% foreach cache %}
+	<tr>
+		<td><a href="/{{ loop_value }}" target="_blank">{{ loop_value }}</a></td>
+		<td>{{ loop_value|filemtime|date ('F j, Y - g:ia', %s) }}</td>
+		<td>{{ loop_value|filesize|format_filesize }}</td>
+	</tr>
+{% end %}
+</table>
+</p>
