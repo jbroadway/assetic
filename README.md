@@ -5,13 +5,13 @@ that pre-compiles and compresses Javascript and CSS using the
 It also supports compiling the following formats
 
 * [SASS](http://sass-lang.com/) -> CSS (.sass files)
-* [LESS]() -> CSS (.less files)
+* [LESS](http://lesscss.org/) -> CSS (.less files)
 * [CoffeeScript]() -> Javascript (.cs or .coffee files)
 
 ### Installation
 
 1. Drop this app into your `apps/` folder.
-2. Open the file `apps/assetic/conf/config.php` and set the paths to your YUI Compressor (used for compressing output), SASS and CoffeeScript compilers.
+2. Open the file `apps/assetic/conf/config.php` and set the paths to your [YUI Compressor](http://developer.yahoo.com/yui/compressor/) (used for compressing output), SASS and CoffeeScript compilers.
 
 ### Usage
 
