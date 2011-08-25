@@ -61,9 +61,16 @@ so that they are regenerated the next time they are run in the browser.
 The `?v=` number will also regenerate so that browsers will automatically
 use the latest version at all times.
 
+For development, you can also change the tags to use Elefant's `{! !}` tags instead,
+which will load the Assetic compilation anew on each request:
+
+```html
+<script src="{! assetic/js/my_script.js !}"></script>
+```
+
 ### How it works
 
-The {# #} template tag will render the scripts the first time the layout is loaded
+The `{# #}` template tag will render the scripts the first time the layout is loaded
 and hard-code the resulting HTML into the template for subsequent requests, so the
 handler is only called the first time. This makes this plugin very fast for
 serving your optimized CSS and Javascript, since after the first load, the
