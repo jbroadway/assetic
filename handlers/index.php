@@ -18,37 +18,39 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 	$file = join ('/', $this->params);
 	$save_as = str_replace ('/', '_', $file);
 
-	$assets = new Assetic\Asset\AssetCollection;
-
-	if (preg_match ('/\.less$/i', $file)) {
-		$save_as = preg_replace ('/\.less$/i', '.css', $save_as);
-		$assets->add (new Assetic\Asset\FileAsset ($file, array (
-			new Assetic\Filter\LessphpFilter (),
-			new Assetic\Filter\Yui\CssCompressorFilter ($appconf['Assetic']['yui_compressor'])
-		)));
-	} elseif (preg_match ('/\.sass$/i', $file)) {
-		$save_as = preg_replace ('/\.sass$/i', '.css', $save_as);
-		$assets->add (new Assetic\Asset\FileAsset ($file, array (
-			new Assetic\Filter\Sass\SassFilter ($appconf['Assetic']['sass_filter']),
-			new Assetic\Filter\Yui\CssCompressorFilter ($appconf['Assetic']['yui_compressor'])
-		)));
-	} elseif (preg_match ('/\.css$/i', $file)) {
-		$assets->add (new Assetic\Asset\FileAsset ($file, array (
-			new Assetic\Filter\Yui\CssCompressorFilter ($appconf['Assetic']['yui_compressor'])
-		)));
-	} elseif (preg_match ('/\.(coffee|cs)$/i', $file)) {
-		$save_as = preg_replace ('/\.(coffee|cs)$/i', '.js', $save_as);
-		$assets->add (new Assetic\Asset\FileAsset ($file, array (
-			new Assetic\Filter\CoffeeScriptFilter ($appconf['Assetic']['coffeescript']),
-			new Assetic\Filter\Yui\JsCompressorFilter ($appconf['Assetic']['yui_compressor'])
-		)));
-	} else {
-		$assets->add (new Assetic\Asset\FileAsset ($file, array (
-			new Assetic\Filter\Yui\JsCompressorFilter ($appconf['Assetic']['yui_compressor'])
-		)));
+	if (@filemtime ($save_as) < @filemtime ($file)) {
+		$assets = new Assetic\Asset\AssetCollection;
+	
+		if (preg_match ('/\.less$/i', $file)) {
+			$save_as = preg_replace ('/\.less$/i', '.css', $save_as);
+			$assets->add (new Assetic\Asset\FileAsset ($file, array (
+				new Assetic\Filter\LessphpFilter (),
+				new Assetic\Filter\Yui\CssCompressorFilter ($appconf['Assetic']['yui_compressor'])
+			)));
+		} elseif (preg_match ('/\.sass$/i', $file)) {
+			$save_as = preg_replace ('/\.sass$/i', '.css', $save_as);
+			$assets->add (new Assetic\Asset\FileAsset ($file, array (
+				new Assetic\Filter\Sass\SassFilter ($appconf['Assetic']['sass_filter']),
+				new Assetic\Filter\Yui\CssCompressorFilter ($appconf['Assetic']['yui_compressor'])
+			)));
+		} elseif (preg_match ('/\.css$/i', $file)) {
+			$assets->add (new Assetic\Asset\FileAsset ($file, array (
+				new Assetic\Filter\Yui\CssCompressorFilter ($appconf['Assetic']['yui_compressor'])
+			)));
+		} elseif (preg_match ('/\.(coffee|cs)$/i', $file)) {
+			$save_as = preg_replace ('/\.(coffee|cs)$/i', '.js', $save_as);
+			$assets->add (new Assetic\Asset\FileAsset ($file, array (
+				new Assetic\Filter\CoffeeScriptFilter ($appconf['Assetic']['coffeescript']),
+				new Assetic\Filter\Yui\JsCompressorFilter ($appconf['Assetic']['yui_compressor'])
+			)));
+		} else {
+			$assets->add (new Assetic\Asset\FileAsset ($file, array (
+				new Assetic\Filter\Yui\JsCompressorFilter ($appconf['Assetic']['yui_compressor'])
+			)));
+		}
+	
+		file_put_contents ('cache/assetic/' . $save_as, $assets->dump ());
 	}
-
-	file_put_contents ('cache/assetic/' . $save_as, $assets->dump ());
 	echo '/cache/assetic/' . $save_as . '?v=' . ASSETIC_VER;
 } else {
 	// Handle a list of files
@@ -68,9 +70,16 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 	$fm->set ('yui_js', new Assetic\Filter\Yui\JsCompressorFilter ($appconf['Assetic']['yui_compressor']));
 
 	if (! empty ($css)) {
+		$cached_mtime = @filemtime ('cache/assetic/' . $name . '.css');
+		$cached_needs_update = false;
+
 		$assets = new Assetic\Asset\AssetCollection;
 
 		foreach ($css as $file) {
+			if ($cached_mtime < @filemtime ($file)) {
+				$cached_needs_update = true;
+			}
+
 			if (strpos ($file, '*')) {
 				$assets->add (new Assetic\Asset\GlobAsset ($file, array ($fm->get ('yui_css'))));
 			} elseif (preg_match ('/\.less$/i', $file)) {
@@ -88,8 +97,10 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 			}
 		}
 
-		file_put_contents ('cache/assetic/' . $name . '.css', $assets->dump ());
-		echo '<link rel="stylesheet" href="/cache/assetic/' . $name . '.css?v=' . ASSETIC_VER . '"></script>';
+		if ($cached_needs_update) {
+			file_put_contents ('cache/assetic/' . $name . '.css', $assets->dump ());
+		}
+		echo '<link rel="stylesheet" href="/cache/assetic/' . $name . '.css?v=' . ASSETIC_VER . '" />';
 	}
 
 	$js = isset ($data['js']) ? $data['js'] : (isset ($_GET['js']) ? $_GET['js'] : array ());
@@ -98,9 +109,16 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 	}
 
 	if (! empty ($js)) {
+		$cached_mtime = @filemtime ('cache/assetic/' . $name . '.js');
+		$cached_needs_update = false;
+
 		$assets = new Assetic\Asset\AssetCollection;
 
 		foreach ($js as $file) {
+			if ($cached_mtime < @filemtime ($file)) {
+				$cached_needs_update = true;
+			}
+
 			if (strpos ($file, '*')) {
 				$assets->add (new Assetic\Asset\GlobAsset ($file, array ($fm->get ('yui_js'))));
 			} elseif (preg_match ('/\.(coffee|cs)$/i', $file)) {
@@ -113,7 +131,9 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 			}
 		}
 
-		file_put_contents ('cache/assetic/' . $name . '.js', $assets->dump ());
+		if ($cached_needs_update) {
+			file_put_contents ('cache/assetic/' . $name . '.js', $assets->dump ());
+		}
 		echo '<script src="/cache/assetic/' . $name . '.js?v=' . ASSETIC_VER . '"></script>';
 	}
 }
