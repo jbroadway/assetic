@@ -12,7 +12,7 @@ sass_parser = /usr/bin/sass
 
 ; Set this to the path to your CoffeeScript compiler
 ; http://jashkenas.github.com/coffee-script/
-coffeescript = /usr/local/bin/coffeescript
+coffeescript = /usr/local/bin/coffee
 
 [Admin]
 

@@ -89,7 +89,7 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 		}
 
 		file_put_contents ('cache/assetic/' . $name . '.css', $assets->dump ());
-		echo '<script src="/cache/assetic/' . $name . '.css?v=' . ASSETIC_VER . '"></script>';
+		echo '<link rel="stylesheet" href="/cache/assetic/' . $name . '.css?v=' . ASSETIC_VER . '"></script>';
 	}
 
 	$js = isset ($data['js']) ? $data['js'] : (isset ($_GET['js']) ? $_GET['js'] : array ());
