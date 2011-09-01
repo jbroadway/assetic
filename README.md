@@ -62,11 +62,13 @@ The `?v=` number will also regenerate so that browsers will automatically
 use the latest version at all times.
 
 For development, you can also change the tags to use Elefant's `{! !}` tags instead,
-which will load the Assetic compilation anew on each request:
+which will load the Assetic compilation process anew on each request:
 
 ```html
 <script src="{! assetic/js/my_script.js !}"></script>
 ```
+
+> It is smart enough to not regenerate the cache if the original files haven't changed, to reduce page load times during development.
 
 ### How it works
 
