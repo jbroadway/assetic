@@ -1,0 +1,20 @@
+{
+    "name": "elefant/app-assetic",
+    "type": "elefant-app",
+    "description": "Assetic app for the Elefant CMS",
+    "keywords": ["assetic", "compile", "javascript", "css", "optimization", "elefant", "cms", "app"],
+    "license": "MIT",
+	"authors": [
+		{
+			"name": "Johnny Broadway",
+			"email": "johnny@johnnybroadway.com",
+			"homepage": "http://www.johnnybroadway.com/"
+		}
+	],
+    "repositories": [
+        {"type": "git", "url": "http://github.com/jbroadway/elefant_installer"}
+    ],
+    "require": {
+        "elefant/app-installer": "*"
+    }
+}
