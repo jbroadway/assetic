@@ -53,6 +53,16 @@ This will produce:
 
 > Note: Change `myscripts` to the name to use to save the cache file as. Otherwise, `all.js` will be used.
 
+> Also note: As of Elefant 1.3.2, file lists can also be written over multiple lines, like this:
+
+```html
+<head>
+{# assetic/myscripts
+	?js[]=js/jquery.js
+	&js[]=js/jquery.verify_values.js #}
+</head>
+```
+
 ### Recompiling later
 
 To regenerate the scripts, log into Elefant and go to `Tools > Assetic` and
