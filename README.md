@@ -36,7 +36,7 @@ Similarly, you can do the same with CSS files:
 Will produce:
 
 ```html
-<link rel="stylsheet" link="/cache/assetic/css_style.css?v=12" />
+<link rel="styelsheet" link="/cache/assetic/css_style.css?v=12" />
 ```
 
 To use Assetic on several scripts or stylesheets at a time:
@@ -49,11 +49,13 @@ To use Assetic on several scripts or stylesheets at a time:
 
 This will produce:
 
+```html
 <script src="/cache/assetic/myscripts.js?v=12"></script>
+```
 
 > Note: Change `myscripts` to the name to use to save the cache file as. Otherwise, `all.js` will be used.
 
-> Also note: As of Elefant 1.3.2, file lists can also be written over multiple lines, like this:
+File lists can also be written over multiple lines, like this:
 
 ```html
 <head>
