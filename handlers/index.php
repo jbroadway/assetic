@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Generates the compiled scripts and stylesheets.
+ */
+
 $cl = new SplClassLoader ('Assetic', 'apps/assetic/lib');
 $cl->register ();
 
@@ -7,9 +11,17 @@ if (! defined ('ASSETIC_VER')) {
 	define ('ASSETIC_VER', mt_rand (1, 100));
 }
 
-if (! @is_dir ('cache/assetic')) {
-	mkdir ('cache/assetic');
-	chmod ('cache/assetic', 0777);
+$save_path = $appconf['Assetic']['save_path'];
+$web_path = $appconf['Assetic']['web_path'];
+
+if (! is_dir ($save_path)) {
+	if ($save_path === 'cache/assetic') {
+		mkdir ($save_path);
+		chmod ($save_path, 0777);
+	} else {
+		printf ('<script>alert("%s");</script>', i18n_get ('Assetic Error: Save folder is missing, please create it.'));
+		return;
+	}
 }
 
 if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) && ! isset ($_GET['js']) && count ($this->params) > 0) {
@@ -49,9 +61,9 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 			)));
 		}
 	
-		file_put_contents ('cache/assetic/' . $save_as, $assets->dump ());
+		file_put_contents ($save_path . '/' . $save_as, $assets->dump ());
 	}
-	echo '/cache/assetic/' . $save_as . '?v=' . ASSETIC_VER;
+	echo $web_path . '/' . $save_as . '?v=' . ASSETIC_VER;
 } else {
 	// Handle a list of files
 
@@ -70,13 +82,17 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 	$fm->set ('yui_js', new Assetic\Filter\Yui\JsCompressorFilter ($appconf['Assetic']['yui_compressor']));
 
 	if (! empty ($css)) {
-		$cached_mtime = @filemtime ('cache/assetic/' . $name . '.css');
-		$cached_needs_update = false;
+		if (! file_exists ($save_path . '/' . $name . '.css')) {
+			$cache_needs_update = true;
+		} else {
+			$cached_mtime = filemtime ($save_path . '/' . $name . '.css');
+			$cached_needs_update = false;
+		}
 
 		$assets = new Assetic\Asset\AssetCollection;
 
 		foreach ($css as $file) {
-			if ($cached_mtime < @filemtime ($file)) {
+			if ($cached_mtime < filemtime ($file)) {
 				$cached_needs_update = true;
 			}
 
@@ -98,9 +114,9 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 		}
 
 		if ($cached_needs_update) {
-			file_put_contents ('cache/assetic/' . $name . '.css', $assets->dump ());
+			file_put_contents ($save_path . '/' . $name . '.css', $assets->dump ());
 		}
-		echo '<link rel="stylesheet" href="/cache/assetic/' . $name . '.css?v=' . ASSETIC_VER . '" />';
+		echo '<link rel="stylesheet" href="' . $web_path . '/' . $name . '.css?v=' . ASSETIC_VER . '" />';
 	}
 
 	$js = isset ($data['js']) ? $data['js'] : (isset ($_GET['js']) ? $_GET['js'] : array ());
@@ -109,13 +125,17 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 	}
 
 	if (! empty ($js)) {
-		$cached_mtime = @filemtime ('cache/assetic/' . $name . '.js');
-		$cached_needs_update = false;
+		if (! file_exists ($save_path . '/' . $name . '.js')) {
+			$cache_needs_update = true;
+		} else {
+			$cached_mtime = filemtime ($save_path . '/' . $name . '.js');
+			$cached_needs_update = false;
+		}
 
 		$assets = new Assetic\Asset\AssetCollection;
 
 		foreach ($js as $file) {
-			if ($cached_mtime < @filemtime ($file)) {
+			if ($cached_mtime < filemtime ($file)) {
 				$cached_needs_update = true;
 			}
 
@@ -132,9 +152,9 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 		}
 
 		if ($cached_needs_update) {
-			file_put_contents ('cache/assetic/' . $name . '.js', $assets->dump ());
+			file_put_contents ($save_path . '/' . $name . '.js', $assets->dump ());
 		}
-		echo '<script src="/cache/assetic/' . $name . '.js?v=' . ASSETIC_VER . '"></script>';
+		echo '<script src="' . $web_path . '/' . $name . '.js?v=' . ASSETIC_VER . '"></script>';
 	}
 }
 

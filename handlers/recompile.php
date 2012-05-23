@@ -1,19 +1,25 @@
 <?php
 
-if (! User::require_admin ()) {
-	$this->redirect ('/admin');
-}
+/**
+ * Recompiles the assets.
+ */
+
+$this->require_admin ();
 
 $page->title = 'Assetic';
 $page->layout = 'admin';
 
-$d = dir (getcwd () . '/layouts');
-while (false != ($entry = $d->read ())) {
-	if (preg_match ('/\.html$/', $entry)) {
-		touch ('layouts/' . $entry);
+// touching the layout files will trigger
+// a recompile on the next page view.
+function touch_layouts ($files) {
+	foreach ($files as $file) {
+		if (preg_match ('/\.html$/', $file)) {
+			touch ('layouts/' . $file);
+		}
 	}
 }
-$d->close ();
+touch_layouts (glob ('layouts/*.html', GLOB_NOSORT));
+touch_layouts (glob ('layouts/*/*.html', GLOB_NOSORT));
 
 $this->add_notification (i18n_get ('Assets will recompile on the next page load.'));
 $this->redirect ('/assetic/admin');
