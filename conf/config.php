@@ -4,7 +4,7 @@
 
 ; Set this to the path to your YUI Compressor
 ; http://developer.yahoo.com/yui/compressor/
-yui_compressor = /Users/lux/Sites/pink/e2/yuicompressor-2.3.6.jar
+yui_compressor = /path/to/yuicompressor.jar
 
 ; Set this to the path to your SASS parser
 ; http://sass-lang.com/
