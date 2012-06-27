@@ -14,6 +14,10 @@ sass_parser = /usr/bin/sass
 ; http://jashkenas.github.com/coffee-script/
 coffeescript = /usr/local/bin/coffee
 
+; Handlebars template compiler
+; http://handlebarsjs.com/
+handlebars = /usr/bin/handlebars
+
 ; Filesystem path to save the compiled files into.
 ; Note: Omit the trailing slash.
 save_path = "cache/assetic"
