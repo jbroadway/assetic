@@ -6,12 +6,13 @@ It also supports compiling the following formats
 
 * [SASS](http://sass-lang.com/) -> CSS (.sass files)
 * [LESS](http://lesscss.org/) -> CSS (.less files)
-* [CoffeeScript]() -> Javascript (.cs or .coffee files)
+* [CoffeeScript](http://coffeescript.org/) -> Javascript (.cs or .coffee files)
+* [Handlebars](http://handlebarsjs.com/) -> Compiled templates
 
 ### Installation
 
 1. Drop this app into your `apps/` folder.
-2. Open the file `apps/assetic/conf/config.php` and set the paths to your [YUI Compressor](http://developer.yahoo.com/yui/compressor/) (used for compressing output), SASS and CoffeeScript compilers.
+2. Open the file `apps/assetic/conf/config.php` and set the paths to your [YUI Compressor](http://developer.yahoo.com/yui/compressor/) (used for compressing output), SASS, CoffeeScript, and Handlebars compilers.
 
 ### Usage
 
