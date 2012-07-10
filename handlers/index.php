@@ -146,6 +146,8 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 					$fm->get ('coffee'),
 					$fm->get ('yui_jss')
 				)));
+			} elseif (preg_match ('/[-.]min\.js$/i', $file)) {
+				$assets->add (new Assetic\Asset\FileAsset ($file));
 			} else {
 				$assets->add (new Assetic\Asset\FileAsset ($file, array ($fm->get ('yui_js'))));
 			}
