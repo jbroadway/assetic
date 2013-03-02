@@ -30,7 +30,7 @@ if (! isset ($data['css']) && ! isset ($data['js']) && ! isset ($_GET['css']) &&
 	$file = join ('/', $this->params);
 	$save_as = str_replace ('/', '_', $file);
 
-	if (@filemtime ($save_as) < @filemtime ($file)) {
+	if (! file_exists ($save_as) || @filemtime ($save_as) < @filemtime ($file)) {
 		$assets = new Assetic\Asset\AssetCollection;
 	
 		if (preg_match ('/\.less$/i', $file)) {
