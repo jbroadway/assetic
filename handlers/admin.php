@@ -27,7 +27,7 @@ if (is_dir ($save_path)) {
 	$d = dir ($save_path);
 	while (false != ($entry = $d->read ())) {
 		if (preg_match ('/^(.*)\.(css|js)$/', $entry, $regs)) {
-			$cache[] = $web_path . '/' . $regs[1] . '.' . $regs[2];
+			$cache[] = ltrim ($web_path, '/') . '/' . $regs[1] . '.' . $regs[2];
 		}
 	}
 	$d->close ();

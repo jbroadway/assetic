@@ -14,7 +14,7 @@ $page->layout = 'admin';
 function touch_layouts ($files) {
 	foreach ($files as $file) {
 		if (preg_match ('/\.html$/', $file)) {
-			touch ('layouts/' . $file);
+			touch ($file);
 		}
 	}
 }
