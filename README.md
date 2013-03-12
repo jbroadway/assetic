@@ -12,7 +12,9 @@ It also supports compiling the following formats
 ### Installation
 
 1. Drop this app into your `apps/` folder.
-2. Open the file `apps/assetic/conf/config.php` and set the paths to your [YUI Compressor](http://developer.yahoo.com/yui/compressor/) (used for compressing output), SASS, CoffeeScript, and Handlebars compilers.
+2. Open the file `apps/assetic/conf/config.php` and set the paths to your compressors/compilers of choice (SASS, CoffeeScript, Handlebars, etc).
+
+By default, it will use JSMinPlus for JavaScript compression and CSSMin for CSS compression. Other options include UglifyJS2/UglifyCSS, and YUI Compressor.
 
 ### Usage
 
