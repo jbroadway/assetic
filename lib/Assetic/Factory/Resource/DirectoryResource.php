@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2013 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -79,7 +79,7 @@ class DirectoryResource implements IteratorResourceInterface
 
     protected function getInnerIterator()
     {
-        return new DirectoryResourceFilterIterator(new \RecursiveDirectoryIterator($this->path), $this->pattern);
+        return new DirectoryResourceFilterIterator(new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS), $this->pattern);
     }
 }
 
@@ -121,13 +121,13 @@ class DirectoryResourceFilterIterator extends \RecursiveFilterIterator
 
         if ($file->isDir()) {
             return '.' != $name[0];
-        } else {
-            return null === $this->pattern || 0 < preg_match($this->pattern, $name);
         }
+
+        return null === $this->pattern || 0 < preg_match($this->pattern, $name);
     }
 
     public function getChildren()
     {
-        return new self(new \RecursiveDirectoryIterator($this->current()->getPathname()), $this->pattern);
+        return new self(new \RecursiveDirectoryIterator($this->current()->getPathname(), \RecursiveDirectoryIterator::FOLLOW_SYMLINKS), $this->pattern);
     }
 }

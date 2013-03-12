@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2013 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -40,13 +40,8 @@ class CssImportFilter extends BaseCssFilter
         $sourceRoot = $asset->getSourceRoot();
         $sourcePath = $asset->getSourcePath();
 
-        $callback = function($matches) use($importFilter, $sourceRoot, $sourcePath)
-        {
-            if (!$matches['url']) {
-                return $matches[0];
-            }
-
-            if (null === $sourceRoot) {
+        $callback = function($matches) use ($importFilter, $sourceRoot, $sourcePath) {
+            if (!$matches['url'] || null === $sourceRoot) {
                 return $matches[0];
             }
 

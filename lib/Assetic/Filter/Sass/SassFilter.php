@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2013 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,15 +12,16 @@
 namespace Assetic\Filter\Sass;
 
 use Assetic\Asset\AssetInterface;
-use Assetic\Filter\FilterInterface;
-use Assetic\Util\ProcessBuilder;
+use Assetic\Exception\FilterException;
+use Assetic\Filter\BaseProcessFilter;
 
 /**
  * Loads SASS files.
  *
+ * @link http://sass-lang.com/
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  */
-class SassFilter implements FilterInterface
+class SassFilter extends BaseProcessFilter
 {
     const STYLE_NESTED     = 'nested';
     const STYLE_EXPANDED   = 'expanded';
@@ -28,6 +29,7 @@ class SassFilter implements FilterInterface
     const STYLE_COMPRESSED = 'compressed';
 
     private $sassPath;
+    private $rubyPath;
     private $unixNewlines;
     private $scss;
     private $style;
@@ -39,9 +41,10 @@ class SassFilter implements FilterInterface
     private $noCache;
     private $compass;
 
-    public function __construct($sassPath = '/usr/bin/sass')
+    public function __construct($sassPath = '/usr/bin/sass', $rubyPath = null)
     {
         $this->sassPath = $sassPath;
+        $this->rubyPath = $rubyPath;
         $this->cacheLocation = realpath(sys_get_temp_dir());
     }
 
@@ -97,11 +100,12 @@ class SassFilter implements FilterInterface
 
     public function filterLoad(AssetInterface $asset)
     {
-        $pb = new ProcessBuilder();
-        $pb
-            ->inheritEnvironmentVariables()
-            ->add($this->sassPath)
-        ;
+        $sassProcessArgs = array($this->sassPath);
+        if (null !== $this->rubyPath) {
+            $sassProcessArgs = array_merge(explode(' ', $this->rubyPath), $sassProcessArgs);
+        }
+
+        $pb = $this->createProcessBuilder($sassProcessArgs);
 
         $root = $asset->getSourceRoot();
         $path = $asset->getSourcePath();
@@ -158,8 +162,8 @@ class SassFilter implements FilterInterface
         $code = $proc->run();
         unlink($input);
 
-        if (0 < $code) {
-            throw new \RuntimeException($proc->getErrorOutput());
+        if (0 !== $code) {
+            throw FilterException::fromProcess($proc)->setInput($asset->getContent());
         }
 
         $asset->setContent($proc->getOutput());

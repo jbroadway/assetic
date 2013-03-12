@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2013 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,19 +12,19 @@
 namespace Assetic\Filter;
 
 use Assetic\Asset\AssetInterface;
-use Assetic\Filter\FilterInterface;
-use Assetic\Util\ProcessBuilder;
+use Assetic\Exception\FilterException;
 
 /**
  * CSSEmbed filter
  *
+ * @link https://github.com/nzakas/cssembed
  * @author Maxime Thirouin <maxime.thirouin@gmail.com>
  */
-class CssEmbedFilter implements FilterInterface
+class CssEmbedFilter extends BaseProcessFilter
 {
     private $jarPath;
     private $javaPath;
-    private $charset = 'utf-8';
+    private $charset;
     private $mhtml; // Enable MHTML mode.
     private $mhtmlRoot; // Use <root> as the MHTML root for the file.
     private $root; // Prepends <root> to all relative URLs.
@@ -79,13 +79,11 @@ class CssEmbedFilter implements FilterInterface
 
     public function filterDump(AssetInterface $asset)
     {
-        $pb = new ProcessBuilder();
-        $pb
-            ->inheritEnvironmentVariables()
-            ->add($this->javaPath)
-            ->add('-jar')
-            ->add($this->jarPath)
-        ;
+        $pb = $this->createProcessBuilder(array(
+            $this->javaPath,
+            '-jar',
+            $this->jarPath,
+        ));
 
         if (null !== $this->charset) {
             $pb->add('--charset')->add($this->charset);
@@ -131,8 +129,8 @@ class CssEmbedFilter implements FilterInterface
         $code = $proc->run();
         unlink($input);
 
-        if (0 < $code) {
-            throw new \RuntimeException($proc->getErrorOutput());
+        if (0 !== $code) {
+            throw FilterException::fromProcess($proc)->setInput($asset->getContent());
         }
 
         $asset->setContent($proc->getOutput());
