@@ -103,11 +103,17 @@ also includes only the much smaller Handlebars runtime without the compiler, fol
 steps:
 
 1\. Save your Handlebars templates with a `.handlebars` file extension in your app's views folder.
+For example:
+
+```html
+<!-- apps/myapp/views/hello.handlebars -->
+<p>Hello {{name}}</p>
+```
 
 2\. Include the following tag in your layout template to precompile them:
 
 ```
-{! assetic/handlebars !}`
+{! assetic/handlebars !}
 ```
 
 3\. After the above include has compiled the templates, you can include them via:
