@@ -29,8 +29,14 @@
  *
  * Alternately, you can run this on the command line via:
  *
+ * 1. `cd` to your site and run the assetic/handlebars command:
+ *
  *     cd /path/to/your/website
  *     php index.php assetic/handlebars
+ *
+ * 2. Include the compiled templates via:
+ *
+ *     <script src="/cache/assetic/handlebars.compiled.js"></script>
  */
 
 if ($this->cli) {

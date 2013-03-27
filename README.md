@@ -95,3 +95,43 @@ compiled scripts are called directly, bypassing the plugin entirely for subseque
 requests.
 
 > You can achieve additional optimization by enabling GZIP output in your web server configuration.
+
+### Precompiling Handlebars templates
+
+To precompile your Handlebars templates for faster execution on the client-side, which
+also includes only the much smaller Handlebars runtime without the compiler, follow these
+steps:
+
+1\. Save your Handlebars templates with a `.handlebars` file extension in your app's views folder.
+
+2\. Include the following tag in your layout template to precompile them:
+
+```
+{! assetic/handlebars !}`
+```
+
+3\. After the above include has compiled the templates, you can include them via:
+
+```html
+<script src="/cache/assetic/handlebars.compiled.js"></script>
+```
+
+This also includes the Handlebars runtime, minus the compiler, for you.
+
+4\. To call a template, simply refer to it like this:
+
+```html
+<script>
+$('#my-div').html (Handlebars.templates.my_template (data));
+</script>
+```
+
+Alternately, you can run the Handlebars compiler from the command line like this:
+
+```bash
+$ cd /path/to/your/website
+$ php index.php assetic/handlebars
+```
+
+This replaces step 2 from the above, but make sure you call it again whenever you
+modify a template, or you could even run it on a cron job.
