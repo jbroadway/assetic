@@ -76,7 +76,7 @@ foreach ($files as $file) {
 }
 
 if ($recompile) {
-	file_put_contents ($all, file_get_contents ('apps/assetic/js/handlebars.runtime-1.0.0.beta.6.js'));
+	file_put_contents ($all, file_get_contents ('apps/assetic/js/handlebars.runtime.min.js'));
 	foreach ($files as $file) {
 		$cache_file = $cache_dir . '/' . basename ($file, '.handlebars') . '.js';
 		file_put_contents ($all, file_get_contents ($cache_file) . ";\n", FILE_APPEND);
