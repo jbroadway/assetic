@@ -26,7 +26,16 @@
  *     <script>
  *     $('#my-div').html (Handlebars.templates.my_template (data));
  *     </script>
+ *
+ * Alternately, you can run this on the command line via:
+ *
+ *     cd /path/to/your/website
+ *     php index.php assetic/handlebars
  */
+
+if ($this->cli) {
+	$page->layout = false;
+}
 
 // path to the handlebars compiler
 $handlebars = $appconf['Assetic']['handlebars'];
@@ -34,6 +43,10 @@ $handlebars = $appconf['Assetic']['handlebars'];
 // path to save cache
 $cache_dir = $appconf['Assetic']['save_path'] . '/handlebars';
 if (! file_exists ($cache_dir)) {
+	if (! file_exists ($appconf['Assetic']['save_path'])) {
+		mkdir ($appconf['Assetic']['save_path']);
+		chmod ($appconf['Assetic']['save_path'], 0777);
+	}
 	mkdir ($cache_dir);
 	chmod ($cache_dir, 0777);
 }
