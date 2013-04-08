@@ -32,7 +32,11 @@
  * 1. `cd` to your site and run the assetic/handlebars command:
  *
  *     cd /path/to/your/website
- *     php index.php assetic/handlebars
+ *     ./elefant assetic/handlebars
+ *
+ * To watch for changes and automatically recompile, use:
+ *
+ *     ./elefant assetic/handlebars --auto
  *
  * 2. Include the compiled templates via:
  *
@@ -41,6 +45,35 @@
 
 if ($this->cli) {
 	$page->layout = false;
+	
+	if (isset ($_SERVER['argv'][2])) {
+		if ($_SERVER['argv'][2] !== '--auto') {
+			echo "Usage: elefant assetic/handlebars [--auto]\n";
+			die;
+		}
+
+		$all = $appconf['Assetic']['save_path'] . '/handlebars.compiled.js';
+		if (! file_exists ($all)) {
+			system ('php index.php assetic/handlebars');
+			sleep (1);
+		}
+
+		$cache_dir = $appconf['Assetic']['save_path'] . '/handlebars';
+
+		while (true) {
+			$files = glob ('apps/*/views/*.handlebars');
+			foreach ($files as $file) {
+				$cache_file = $cache_dir . '/' . basename ($file, '.handlebars') . '.js';
+				if (! file_exists ($cache_file) || filemtime ($cache_file) < filemtime ($file)) {
+					system ('php index.php assetic/handlebars');
+					break;
+				}
+			}
+
+			sleep (1);
+		}
+		exit;
+	}
 }
 
 // path to the handlebars compiler
