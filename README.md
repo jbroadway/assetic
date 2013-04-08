@@ -136,8 +136,14 @@ Alternately, you can run the Handlebars compiler from the command line like this
 
 ```bash
 $ cd /path/to/your/website
-$ php index.php assetic/handlebars
+$ ./elefant assetic/handlebars
 ```
 
-This replaces step 2 from the above, but make sure you call it again whenever you
-modify a template, or you could even run it on a cron job.
+This replaces step 2 from the above, but note that you'll need to call it again
+whenever you modify a template, or run it with the `--auto` option to watch for
+template changes and automatically recompile them:
+
+```bash
+$ cd /path/to/your/website
+$ ./elefant assetic/handlebars --auto
+```
