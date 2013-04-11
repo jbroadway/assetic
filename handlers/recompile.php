@@ -16,6 +16,7 @@ if ($this->cli) {
 // touching the layout files will trigger
 // a recompile on the next page view.
 function touch_layouts ($files) {
+	$files = is_array ($files) ? $files : array ();
 	foreach ($files as $file) {
 		if (preg_match ('/\.html$/', $file)) {
 			touch ($file);
@@ -28,6 +29,7 @@ touch_layouts (glob ('layouts/*/*.html', GLOB_NOSORT));
 // touching the handlebars templates will
 // trigger a recompile on the next page view.
 function touch_handlebars ($files) {
+	$files = is_array ($files) ? $files : array ();
 	foreach ($files as $file) {
 		if (preg_match ('/\.handlebars$/', $file)) {
 			touch ($file);
